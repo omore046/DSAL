@@ -1,109 +1,84 @@
-/*Round Robin(Preemptive)*/
-import java.util.*;
-import java.io.*;
-class RoundR
-{
-	public static void main(String args[])
-	{
-		int Process[]=new int[10];
-		int a[]=new int[10];
-		int Arrival_time[]=new int[10];
-		int Burst_time[]=new int[10];
-		int WT[]=new int[10];
-		int TAT[]=new int[10];
-		int Pno,sum=0;;
-		int TimeQuantum;
-		
-System.out.println("\nEnter the no. of Process::");
-		Scanner sc=new Scanner(System.in);
-		Pno=sc.nextInt();
-		System.out.println("\nEnter each process::");
-		for(int i=0;i<Pno;i++)
-		{
-			Process[i]=sc.nextInt();
-		}
-		
-System.out.println("\nEnter the Burst Time of each process::");
-		for(int i=0;i<Pno;i++)
-		{
-			Burst_time[i]=sc.nextInt();
-		}
-System.out.println("\nEnter the Time Quantum::");
-TimeQuantum=sc.nextInt();		
-		do{
-	    	for(int i=0;i<Pno;i++)
-	    	{
-	     		if(Burst_time[i]>TimeQuantum)
-	     		{
-	    		  	Burst_time[i]-=TimeQuantum; 
-	      		  	for(int j=0;j<Pno;j++)
-	      			{
-	       				if((j!=i)&&(Burst_time[j]!=0))
-	        			WT[j]+=TimeQuantum;
-	         		}
-	          	}
-	           	else
-	           	{ 
-	           		for(int j=0;j<Pno;j++)
-	           		{
-	            			if((j!=i)&&(Burst_time[j]!=0))
-	             			WT[j]+=Burst_time[i];
-	              		} 
-	              		Burst_time[i]=0; 
-	                } 
-	       }
-	               sum=0; 
-	               for(int k=0;k<Pno;k++) 
-            		sum=sum+Burst_time[k];
-	    } while(sum!=0); 
-	                
-	             for(int i=0;i<Pno;i++)
-	                	 TAT[i]=WT[i]+a[i];
-	               System.out.println("process\t\tBT\tWT\tTAT");
-	               for(int i=0;i<Pno;i++)
-	               {
-	                    System.out.println("process"+(i+1)+"\t"+a[i]+"\t"+WT[i]+"\t"+TAT[i]);
-	               } 
-	                     float avg_wt=0;
-	               float avg_tat=0;
-	               for(int j=0;j<Pno;j++)
-	               { 
-	                       avg_wt+=WT[j]; 
-	               } 
-	               for(int j=0;j<Pno;j++)
-	               { 
-	                       avg_tat+=TAT[j]; 
-	               } 
-	                 System.out.println("average waiting time "+(avg_wt/Pno)+"\n Average turn around time"+(avg_tat/Pno)); 		
-	}		
-}
+import java.util.Scanner;  
+public class RR  
+{  
+public static void main(String args[])  
+{  
+int n,i,qt,count=0,temp,sq=0,bt[],wt[],tat[],rem_bt[];  
+float awt=0,atat=0;  
+bt = new int[10];  
+wt = new int[10];  
+tat = new int[10];  
+rem_bt = new int[10];  
+Scanner s=new Scanner(System.in);  
+System.out.print("Enter the number of process (maximum 10) = ");  
+n = s.nextInt();  
+System.out.print("Enter the burst time of the process\n");  
+for (i=0;i<n;i++)  
+{  
+System.out.print("P"+i+" = ");   
+bt[i] = s.nextInt();  
+rem_bt[i] = bt[i];  
+}  
+System.out.print("Enter the quantum time: ");  
+qt = s.nextInt();  
+while(true)  
+{  
+for (i=0,count=0;i<n;i++)  
+{  
+temp = qt;  
+if(rem_bt[i] == 0)  
+{  
+count++;  
+continue;  
+}  
+if(rem_bt[i]>qt)  
+rem_bt[i]= rem_bt[i] - qt;  
+else  
+if(rem_bt[i]>=0)  
+{  
+temp = rem_bt[i];  
+rem_bt[i] = 0;  
+}  
+sq = sq + temp;  
+tat[i] = sq;  
+}  
+if(n == count)  
+break;  
+}  
+System.out.print("--------------------------------------------------------------------------------");  
+System.out.print("\nProcess\t      Burst Time\t       Turnaround Time\t          Waiting Time\n");  
+System.out.print("--------------------------------------------------------------------------------");  
+for(i=0;i<n;i++)  
+{  
+wt[i]=tat[i]-bt[i];  
+awt=awt+wt[i];  
+atat=atat+tat[i];  
+System.out.print("\n "+(i+1)+"\t "+bt[i]+"\t\t "+tat[i]+"\t\t "+wt[i]+"\n");  
+}  
+awt=awt/n;  
+atat=atat/n;  
+System.out.println("\nAverage waiting Time = "+awt+"\n");  
+System.out.println("Average turnaround time = "+atat);  
+}  
+} 
 
-/*OUTPUT::
-unix@unix-HP-280-G1-
-MT:~/TEA33$ java RoundR
-Enter the no. of Process::
-5   
-Enter each process::
-1
-2
-3
-4
-5
+Output:
+Enter the number of process (maximum 10) = 3
+Enter the burst time of the process
+P0 = 5
+P1 = 6
+P2 = 2
+Enter the quantum time: 2
+--------------------------------------------------------------------------------
+Process	      Burst Time	       Turnaround Time	          Waiting Time
+--------------------------------------------------------------------------------
+ 1	 5		 11		 6
 
-Enter the Burst Time of each process::
-2 
-1
-8
-4
-5
-Enter the Time Quantum::
-2
-process		BT	WT	TAT
-process1	0	0	0
-process2	0	2	2
-process3	0	12	12
-process4	0	9	9
-process5	0	13	13
-average waiting time 7.2
-Average turn around time7.2       */
+ 2	 6		 13		 7
 
+ 3	 2		 6		 4
+
+Average waiting Time = 5.6666665
+
+Average turnaround time = 10.0
+ 
